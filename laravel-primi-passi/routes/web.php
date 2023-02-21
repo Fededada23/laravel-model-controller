@@ -14,15 +14,25 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('index');
-})->name('homepage');
+    $data = [
+        "series" => config("comics")
+    ];
+    return view('home', $data);
+})-> name("homepage");
 
-Route::get('/secondapagina', function () {
-    $welcome = 'Pagina 2';
-    return view('secondapagina',compact('welcome'));
-})->name('secondapagina');
+Route::get("/comic/{id}", function($id) {
+    $comics = config('comics');
+    //utilizzo la funzione php array_key_exists per verificare se la key (id) esiste nell'array
+    if(array_key_exists($id, $comics))  {
+        $item = $comics[$id];
+        $data = [
+           'comic' => $item
+       ];
+       return view('details', $data);
+    }
+       abort("404");
+})->name("page-details");
 
-Route::get('/terzapagina', function () {
-    $welcome = 'Pagina 3';
-    return view('terzapagina',compact('welcome'));
-})->name('terzapagina');
+Route::get('contact-us', function () {
+    return view("contact");
+})-> name("page-contact");
